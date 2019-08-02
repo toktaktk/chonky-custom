@@ -4,12 +4,16 @@
  * @license MIT
  */
 
-import {If, Then, Else} from 'react-if';
 import * as React from 'react';
 import filesize from 'filesize';
 import dateFormat from 'dateformat';
+import {If, Then, Else, When} from 'react-if';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faArrowUp as AscIcon, faArrowDown as DescIcon} from '@fortawesome/free-solid-svg-icons';
+import {
+    faArrowUp as AscIcon,
+    faArrowDown as DescIcon,
+    faEyeSlash as HiddenIcon,
+} from '@fortawesome/free-solid-svg-icons';
 
 import {getIconData} from './IconUtil';
 import {ColorsDark, FileData, SortOrder, SortProperty} from './typedef';
@@ -23,16 +27,18 @@ type FileDetailsViewProps = {
 
 type FileDetailsViewState = {}
 
+const HeaderDetails = [
+    [null, ''],
+    [SortProperty.Name, 'Name'],
+    [SortProperty.Size, 'Size'],
+    [SortProperty.ModDate, 'Last change'],
+];
+const readableDate = (date: Date) => dateFormat(date, 'HH:MM, mmm d, yyyy');
+const readableSize = (size: number) => filesize(size, {bits: false, exponent: 1});
+
 export default class FileDetailsView extends React.Component<FileDetailsViewProps, FileDetailsViewState> {
 
     static defaultProps = {};
-
-    static headerDetails = [
-        [null, ''],
-        [SortProperty.Name, 'Name'],
-        [SortProperty.Size, 'Size'],
-        [SortProperty.ModDate, 'Last change'],
-    ];
 
     constructor(props: FileDetailsViewProps) {
         super(props);
@@ -40,10 +46,15 @@ export default class FileDetailsView extends React.Component<FileDetailsViewProp
 
     renderHeaders() {
         const {sortProperty, sortOrder, activateSortProperty} = this.props;
-        const comps = new Array(FileDetailsView.headerDetails.length);
-        for (let i = 0; i < FileDetailsView.headerDetails.length; ++i) {
-            const [name, title] = FileDetailsView.headerDetails[i];
-            comps[i] = <th key={`header-${name}`} onClick={() => activateSortProperty(name as SortProperty)}>
+        const comps = new Array(HeaderDetails.length);
+        for (let i = 0; i < HeaderDetails.length; ++i) {
+            const [name, title] = HeaderDetails[i];
+            const headerProps = !name ? {} : {
+                tabIndex: 0,
+                className: 'chonky-clickable',
+                onClick: () => activateSortProperty(name as SortProperty),
+            };
+            comps[i] = <div key={`header-${name}`} {...headerProps}>
                 {title}
                 {sortProperty === name &&
                 <span className="chonky-text-subtle">
@@ -51,48 +62,54 @@ export default class FileDetailsView extends React.Component<FileDetailsViewProp
                     <FontAwesomeIcon icon={sortOrder === SortOrder.Asc ? AscIcon : DescIcon} fixedWidth size="sm"/>
                 </span>
                 }
-            </th>;
+            </div>;
         }
-        return comps;
+        return <div className="chonky-view-details-header">{comps}</div>;
+    }
+
+    static renderField(value: any, displayFunc: (value: any) => string) {
+        if (!value) return <span className="chonky-text-subtle">—</span>;
+        return displayFunc(value);
     }
 
     renderRows() {
-        console.log(If);
         const {files} = this.props;
         const comps = new Array(files.length);
         for (let i = 0; i < files.length; ++i) {
             const file = files[i];
             const iconData = getIconData(file);
-            comps[i] = <tr key={file.id}>
-                <td style={{color: ColorsDark[iconData.colorCode], width: 1}}>
-                    <FontAwesomeIcon icon={iconData.icon} fixedWidth/>
-                </td>
-                <td className="chonky-file-name">
+            const style = {color: ColorsDark[iconData.colorCode]};
+            comps[i] = <div key={file.id} className="chonky-view-details-row" tabIndex={0}>
+                <div style={style}><FontAwesomeIcon icon={iconData.icon} fixedWidth/></div>
+                <div className="chonky-file-name">
+                    <When condition={file.isHidden}>
+                        <span className="chonky-text-subtle"><FontAwesomeIcon icon={HiddenIcon} size="xs"/></span>
+                        &nbsp;&nbsp;
+                    </When>
                     <If condition={file.isDir}>
                         <Then>
                             {file.base}
+                            <span className="chonky-text-subtle" style={{marginLeft: 2}}>/</span>
                         </Then>
                         <Else>
                             {file.name}
-                            <span>{file.ext}</span>
+                            <span className="chonky-text-subtle-dark">{file.ext}</span>
                         </Else>
                     </If>
-                </td>
-                <td>{file.size ? filesize(file.size, {bits: false}) : '—'}</td>
-                <td>{dateFormat(file.modDate, 'HH:MM, mmm d, yyyy')}</td>
-            </tr>;
+                </div>
+                <div>{FileDetailsView.renderField(file.size, readableSize)}</div>
+                <div>{FileDetailsView.renderField(file.modDate, readableDate)}</div>
+            </div>;
         }
         return comps;
     }
 
     render() {
 
-        return <table className="chonky-view-details">
-            <thead>
-            <tr>{this.renderHeaders()}</tr>
-            </thead>
-            <tbody>{this.renderRows()}</tbody>
-        </table>;
+        return <div className="chonky-view-details">
+            {this.renderHeaders()}
+            {this.renderRows()}
+        </div>;
     }
 
 }

@@ -1,31 +1,39 @@
 @import "util"
 
 .chonky
+  $table-side-padding: 0.6em
+
   &-view-details
-    border-collapse: collapse
+    position: relative
+    display: table
 
-    th
-      border-bottom: solid 1px $border-dark
-      padding: 0.3em 0.4em
-      font-weight: normal
-      font-size: 0.9em
-      text-align: left
+    &-header, &-row
+      display: table-row !important
+      font-size: 0.95em
 
-      &:not(:last-child)
-        border-right: solid 1px $border-light
+      & > div
+        padding: 0.4em $table-side-padding
+        display: table-cell !important
+        &:first-child
+          width: 1px
 
-    tr
-      td
-        font-size: 1.1em
-        padding: 0.4em
+    &-header
+      & > div
+        border-bottom: solid 1px $border-light
+        color: $fg-subtle-dark
 
-        .chonky-file-name
-          span
-            color: $fg-subtle
+        &.chonky-clickable
+          cursor: pointer
+          &:hover
+            background-color: $bg-dark
 
-        &:not(:first-child)
-          font-size: 0.95em
+    &-row
+      &:hover
+        background-color: $bg-dark
 
-      &:not(:last-child)
-        td
-          border-bottom: solid 1px $border-light
+      & > div
+        border-bottom: solid 1px $border-lighter
+
+        &:first-child
+          padding-right: 0.2em
+          font-size: 1.3em

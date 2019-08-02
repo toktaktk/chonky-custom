@@ -30,8 +30,8 @@ const readFile = (filePath, parentFile) => {
                 isHidden: parsed.name.charAt(0) === '.',
                 isSymlink: stats.isSymbolicLink(),
 
-                parent: parentFile ? parentFile.id : null,
-                children: [],
+                parentId: parentFile ? parentFile.id : null,
+                childrenIds: [],
             };
         });
 };
@@ -60,16 +60,16 @@ const dirToFsTree = (dirPath, parentFile) => {
                 if (file.base === 'node_modules' || file.base === '.git' || file.base === '.idea') continue;
 
                 fileMap[file.id] = file;
-                if (parentFile) parentFile.children.push(file.id);
+                if (parentFile) parentFile.childrenIds.push(file.id);
                 if (file.isDir) promises.push(dirToFsTree(upath.join(dirPath, file.base), file));
             }
             return Promise.all(promises);
         });
 };
 
-const outPath = path.join(__dirname, '..', 'example', 'src', 'project-fs.json');
+const outPath = path.join(__dirname, '..', 'demo', 'src', 'project-fs.json');
 let rootFile;
-readFile(rootPath, null)
+readFile(path.join(rootPath, 'Chonky'), null)
     .then(file => {
         fileMap[file.id] = file;
         rootFile = file;

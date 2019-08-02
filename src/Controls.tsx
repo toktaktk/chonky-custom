@@ -15,15 +15,18 @@ import {
     faCheckCircle,
     faArrowLeft as iconPathBack,
     faArrowRight as iconPathForward,
+    faLevelUpAlt as iconPathParentDir,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Dropdown from './Dropdown';
 import IconButton from './IconButton';
 import ButtonGroup from './ButtonGroup';
-import {FolderView, Option, Options} from './typedef';
 import DropdownButton from './DropdownButton';
+import {FileData, FolderView, Option, Options} from './typedef';
 
 type ControlsProps = {
+    folderChain?: (FileData | null)[];
+
     view: FolderView;
     setView: (view: FolderView) => void;
 
@@ -47,6 +50,7 @@ export default class Controls extends React.Component<ControlsProps, ControlsSta
         [Option.ShowHidden, 'Show hidden files'],
         [Option.FoldersFirst, 'Show folders first'],
         [Option.ConfirmDeletions, 'Confirm before deleting'],
+        [Option.DisableSelection, 'Disable text selection'],
     ];
 
     constructor(props: ControlsProps) {
@@ -78,14 +82,18 @@ export default class Controls extends React.Component<ControlsProps, ControlsSta
     }
 
     render() {
-        const {} = this.props;
+        const {folderChain} = this.props;
 
         return <div className="chonky-controls">
             <div className="chonky-side chonky-side-left">
                 <ButtonGroup>
                     <IconButton icon={iconPathBack}/>
                     <IconButton icon={iconPathForward}/>
+                    <IconButton icon={iconPathParentDir}/>
                 </ButtonGroup>
+                <div>
+                    {folderChain && folderChain.map(f => f ? f.base : 'Loading...').join(' / ')}
+                </div>
             </div>
             <div className="chonky-side chonky-side-right">
                 <IconButton icon={faFolderPlus} tooltip="Create folder"/>

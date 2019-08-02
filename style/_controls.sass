@@ -3,17 +3,21 @@
 .chonky
   &-side
     &-left, &-right
-      padding: $base-padding
+      padding-bottom: 0
+      & > *
+        vertical-align: middle
+        display: inline-block
+
 
     &-left > *
-      margin-right: $base-padding * 1.5
+      margin-right: $base-padding * 1.75
 
     &-right > *
-      margin-left: $base-padding * 1.5
+      margin-left: $base-padding * 1.75
 
   &-controls
-    border-bottom: solid 1px $border-dark
     justify-content: space-between
+    margin-bottom: $base-padding
     display: flex
 
   &-button-group
@@ -38,8 +42,9 @@
       #{$dropdown-parent}-contents
         display: block
 
+
     &-contents
-      border: solid 1px $border-dark
+      border: solid 1px $border-light
       border-radius: $radius-medium
       background-color: $bg-base
       position: absolute
@@ -57,8 +62,12 @@
       display: block
       width: 100%
 
+      &:active, &:focus
+        & + #{$dropdown-parent}-contents
+          display: block
+
       &:not(:last-child)
-        border-bottom: solid 1px $border-light
+        border-bottom: solid 1px $border-lighter
 
   &-dropdown-button, &-icon-button
     @include default-transition(background-color)
@@ -76,9 +85,9 @@
       z-index: 2
 
   &-icon-button
-    border: solid 1px $border-light
     border-radius: $radius-medium
     line-height: $base-bar-height
+    border: solid 1px transparent
     min-width: $base-bar-height
     height: $base-bar-height
     vertical-align: middle
@@ -88,11 +97,13 @@
     z-index: 1
 
     &.chonky-active
-      border-color: $border-darker !important
       z-index: 3
 
     &:hover
       z-index: 2
+
+    &:active
+      border-color: $border-dark
 
     & > span
       border-color: $border-dark

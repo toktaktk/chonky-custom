@@ -5,12 +5,14 @@
  */
 
 import React from 'react';
-import Denque from 'denque';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import {shallowEqualArrays, shallowEqualObjects} from 'shallow-equal';
 
 import FileList from './FileList';
 import Controls from './Controls';
-import {FileData, FileMap, FolderView, Option, Options, SortOrder, SortProperty} from './typedef';
+import {FileUtil} from './FileUtil';
+import {FileData, FolderView, Option, Options, SortOrder, SortProperty} from './typedef';
 
 type FileBrowserProps = {
     fileMap: { [id: string]: FileData };
@@ -23,8 +25,6 @@ type FileBrowserProps = {
     defaultSortProperty?: SortProperty;
     defaultSortOrder?: SortOrder;
 }
-
-console.log(PropTypes);
 
 const FileBrowserPropTypes = {
     fileMap: PropTypes.object.isRequired,
@@ -39,7 +39,7 @@ const FileBrowserPropTypes = {
 };
 
 type FileBrowserState = {
-    folder?: FileData;
+    folderChain?: (FileData | null)[];
     rawFiles: FileData[];
     missingIds: string[];
     sortedFiles: FileData[];
@@ -61,37 +61,22 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
 
         const {fileMap, folderId, fileIds: propFileIds, defaultView, defaultOptions, defaultSortProperty, defaultSortOrder} = props;
 
-        if (folderId && propFileIds) {
-            console.warn('[Chonky] Both `folderId` and `fileIds` were specified as props for FileBrowser. ' +
-                'Using `fileIds`.');
-        }
-
-        let folder;
-        let fileIds = null;
-        if (propFileIds) {
-            fileIds = propFileIds;
-        } else if (folderId) {
-            folder = fileMap[folderId];
-            fileIds = folder.children;
-        } else {
-            throw new Error('[Chonky] Neither `folderId` nor `fileIds` were specified as props for FileBrowser.');
-        }
-
         const options = {
             [Option.ShowHidden]: true,
             [Option.FoldersFirst]: true,
             [Option.ShowExtensions]: true,
             [Option.ConfirmDeletions]: true,
+            [Option.DisableSelection]: true,
             ...defaultOptions,
         };
-        const [rawFiles, missingIds] = FileBrowser.prepareRawFiles(fileMap, fileIds);
+        const [rawFiles, missingIds] = FileUtil.prepareRawFiles(fileMap, folderId, propFileIds);
         const sortProperty = defaultSortProperty ? defaultSortProperty : SortProperty.Name;
         const sortOrder = defaultSortOrder ? defaultSortOrder : SortOrder.Asc;
         this.state = {
-            folder,
+            folderChain: folderId ? FileUtil.getFolderChain(fileMap, folderId) : undefined,
             rawFiles,
             missingIds,
-            sortedFiles: FileBrowser.sortFiles(rawFiles, options, sortProperty, sortOrder),
+            sortedFiles: FileUtil.sortFiles(rawFiles, options, sortProperty, sortOrder),
             view: defaultView ? defaultView : FolderView.Details,
             options,
             sortProperty,
@@ -99,59 +84,30 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
         };
     }
 
-    static prepareComparator = (foldersFirst: boolean, sortProperty: SortProperty, sortOrder: SortOrder) => {
-        return (fileA: FileData, fileB: FileData) => {
-            if (foldersFirst) {
-                if (fileA.isDir && !fileB.isDir) return -1;
-                else if (!fileA.isDir && fileB.isDir) return 1;
-            }
-            let propA;
-            let propB;
-            let returnVal = sortOrder === SortOrder.Asc ? 1 : -1;
-            if (sortProperty === SortProperty.Size) {
-                propA = fileA.size;
-                propB = fileB.size;
-            } else if (sortProperty === SortProperty.ModDate) {
-                propA = fileA.modDate;
-                propB = fileB.modDate;
-            } else {
-                propA = fileA.base;
-                propB = fileB.base;
-            }
-            if (propA > propB) return returnVal;
-            else return -returnVal;
-        };
-    };
-
-    static prepareRawFiles(fileMap: FileMap, fileIds: string[]): [FileData[], string[]] {
-        const rawFilesQueue = new Denque();
-        const missingIdsQueue = new Denque();
-        for (let i = 0; i < fileIds.length; ++i) {
-            const id = fileIds[i];
-            const file = fileMap[id];
-            if (file) rawFilesQueue.push(file);
-            else missingIdsQueue.push(id);
-        }
-        return [rawFilesQueue.toArray(), missingIdsQueue.toArray()];
-    }
-
-    static sortFiles(rawFiles: FileData[], options: Options,
-                     sortProperty: SortProperty, sortOrder: SortOrder): FileData[] {
-        let files = rawFiles.slice(0);
-        if (!options[Option.ShowHidden]) files = files.filter(f => f.name.charAt(0) !== '.');
-        const comparator = FileBrowser.prepareComparator(options[Option.FoldersFirst], sortProperty, sortOrder);
-        files.sort(comparator);
-        return files;
-    }
-
     componentWillReceiveProps(nextProps: Readonly<FileBrowserProps>): void {
-        const {fileMap: oldFileMap, fileIds: oldFileIds} = this.props;
-        const {fileMap, fileIds} = nextProps;
-        if (fileMap !== oldFileMap || fileIds !== oldFileIds) {
-            // const [rawFiles, missingIds] = FileBrowser.prepareRawFiles(fileMap, fileIds);
-            // this.setState({
-            //
-            // })
+        const {fileMap: oldFileMap, folderId: oldFolderId, fileIds: oldFileIds} = this.props;
+        const {fileMap, folderId, fileIds} = nextProps;
+        if (fileMap !== oldFileMap || folderId !== oldFolderId || !shallowEqualArrays(fileIds, oldFileIds)) {
+            const [rawFiles, missingIds] = FileUtil.prepareRawFiles(fileMap, folderId, fileIds);
+            this.setState({rawFiles, missingIds});
+        }
+    }
+
+    componentDidUpdate(prevProps: Readonly<FileBrowserProps>, prevState: Readonly<FileBrowserState>,
+                       snapshot?: any): void {
+        const {
+            rawFiles: oldRawFiles, options: oldOptions,
+            sortProperty: oldSortProperty, sortOrder: oldSortOrder,
+        } = prevState;
+        const {rawFiles, options, sortProperty, sortOrder} = this.state;
+        const needToResort = !shallowEqualArrays(rawFiles, oldRawFiles)
+            || !shallowEqualObjects(options, oldOptions)
+            || sortProperty !== oldSortProperty
+            || sortOrder !== oldSortOrder;
+        if (needToResort) {
+            this.setState({
+                sortedFiles: FileUtil.sortFiles(rawFiles, options, sortProperty, sortOrder),
+            });
         }
     }
 
@@ -182,11 +138,16 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
     };
 
     render() {
-        const {sortedFiles, view, options, sortProperty, sortOrder} = this.state;
+        const {folderChain, sortedFiles, view, options, sortProperty, sortOrder} = this.state;
 
+        const className = classnames({
+            'chonky': true,
+            'chonky-no-select': options[Option.DisableSelection],
+        });
         return (
-            <div className="chonky">
-                <Controls view={view} setView={this.setView} options={options} setOption={this.setOption}/>
+            <div className={className}>
+                <Controls folderChain={folderChain} view={view} setView={this.setView}
+                          options={options} setOption={this.setOption}/>
                 <FileList files={sortedFiles} view={view} sortProperty={sortProperty} sortOrder={sortOrder}
                           activateSortProperty={this.activateSortProperty}/>
             </div>

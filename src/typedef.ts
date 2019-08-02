@@ -20,8 +20,8 @@ export type FileData = {
     isHidden: boolean;
     isSymLink: boolean;
 
-    parent?: string;
-    children: string[];
+    parentId?: string;
+    childrenIds: string[];
 }
 
 export type FileMap = {
@@ -44,6 +44,7 @@ export enum Option {
     FoldersFirst = 'folders-first',
     ShowExtensions = 'show-extensions',
     ConfirmDeletions = 'confirm-deletions',
+    DisableSelection = 'disable-selection',
 }
 
 export type Options = {
@@ -51,6 +52,7 @@ export type Options = {
     [Option.FoldersFirst]: boolean,
     [Option.ShowExtensions]: boolean,
     [Option.ConfirmDeletions]: boolean,
+    [Option.DisableSelection]: boolean,
 }
 
 export enum SortProperty {

@@ -1,12 +1,13 @@
 $base-padding: 0.3em
 $base-bar-height: 1.9em
 
-$border-light: #eee
+$border-lighter: #f6f6f6
+$border-light: #e4e4e4
 $border-dark: #ccc
 $border-darker: #aaa
 
 $fg-base: #000
-$fg-subtle: #999
+$fg-subtle: #bbb
 $fg-subtle-dark: #666
 $fg-active: #09f
 
@@ -21,7 +22,7 @@ $tooltip-fg: #fff
 
 @mixin reset-button
   background: none
-  outline: inherit
+  //outline: inherit
   cursor: pointer
   color: inherit
   font: inherit
@@ -43,3 +44,10 @@ $tooltip-fg: #fff
   -ms-transform: $args
   -o-transform: $args
   transform: $args
+
+@mixin outline($outline-width, $outline-color, $outline-style, $outline-offset)
+  outline: $outline-width $outline-color $outline-style
+  outline-offset: (-1 * ($outline-width + $outline-offset))
+
+@mixin default-outline()
+  @include outline(1px, rgba($fg-active, 0.4), dashed, 1px)
