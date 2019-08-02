@@ -23,14 +23,14 @@ npm install --save chonky
 ```tsx
 import * as React from 'react';
 
-import MyComponent from 'chonky';
+import {FileBrowser} from 'chonky';
 
 class Example extends React.Component {
-  render () {
-    return (
-      <MyComponent />
-    );
-  }
+    render() {
+        return (
+            <FileBrowser fileMap={{}} fileIds={[]}/>
+        );
+    }
 }
 ```
 
