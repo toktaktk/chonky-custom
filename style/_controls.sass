@@ -1,0 +1,99 @@
+@import "util"
+
+.chonky
+  &-side
+    &-left, &-right
+      padding: $base-padding
+
+    &-left > *
+      margin-right: $base-padding * 1.5
+
+    &-right > *
+      margin-left: $base-padding * 1.5
+
+  &-controls
+    border-bottom: solid 1px $border-dark
+    justify-content: space-between
+    display: flex
+
+  &-button-group
+    display: inline-block
+
+    button:not(:first-child)
+      border-bottom-left-radius: 0
+      border-top-left-radius: 0
+
+    button:not(:last-child)
+      border-bottom-right-radius: 0
+      border-top-right-radius: 0
+      margin-right: -1px
+
+  &-dropdown
+    display: inline-block
+    position: relative
+
+    $dropdown-parent: &
+
+    &.chonky-active, &:hover, &:active
+      #{$dropdown-parent}-contents
+        display: block
+
+    &-contents
+      border: solid 1px $border-dark
+      border-radius: $radius-medium
+      background-color: $bg-base
+      position: absolute
+      overflow: hidden
+      margin-top: 4px
+      display: none
+      z-index: 888
+      top: 100%
+      right: 0
+
+    &-button
+      padding: 0.5em !important
+      white-space: nowrap
+      text-align: left
+      display: block
+      width: 100%
+
+      &:not(:last-child)
+        border-bottom: solid 1px $border-light
+
+  &-dropdown-button, &-icon-button
+    @include default-transition(background-color)
+    @include reset-button
+
+    &[disabled]
+      color: $fg-subtle !important
+      pointer-events: none
+
+    &.chonky-active
+      color: $fg-active
+
+    &:hover
+      background-color: $bg-dark
+      z-index: 2
+
+  &-icon-button
+    border: solid 1px $border-light
+    border-radius: $radius-medium
+    line-height: $base-bar-height
+    min-width: $base-bar-height
+    height: $base-bar-height
+    vertical-align: middle
+    box-sizing: border-box
+    text-align: center
+    position: relative
+    z-index: 1
+
+    &.chonky-active
+      border-color: $border-darker !important
+      z-index: 3
+
+    &:hover
+      z-index: 2
+
+    & > span
+      border-color: $border-dark
+      padding: $base-padding * 2

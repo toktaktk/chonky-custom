@@ -1,0 +1,53 @@
+@import "util"
+@import "controls"
+@import "file-list"
+@import "view-details"
+
+.chonky
+  border: solid 1px $border-dark
+  flex-direction: column
+  display: flex
+
+  &-text-subtle
+    color: $fg-subtle
+
+  &-text-active
+    color: $fg-active
+
+  &-tooltip
+    position: relative
+
+    &:hover
+      &::before, &::after
+        opacity: 1
+
+    &::before, &::after
+      @include default-transition(opacity)
+      pointer-events: none
+      position: absolute
+      display: block
+      bottom: 100%
+      opacity: 0
+      left: 50%
+
+    &::before
+      @include transform(translateX(-50%))
+      background-color: $tooltip-bg
+      border-radius: $radius-small
+      content: attr(data-tooltip)
+      padding: 0.4em 0.5em
+      white-space: nowrap
+      margin-bottom: 6px
+      line-height: 1.0em
+      color: $tooltip-fg
+      font-size: 0.8em
+      height: auto
+
+    &::after
+      @include transform(translateX(-50%) rotate(45deg))
+      border: solid 2px $tooltip-bg
+      border-left-color: transparent
+      border-top-color: transparent
+
+      margin-bottom: 4px
+      content: ''

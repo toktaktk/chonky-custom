@@ -1,0 +1,45 @@
+$base-padding: 0.3em
+$base-bar-height: 1.9em
+
+$border-light: #eee
+$border-dark: #ccc
+$border-darker: #aaa
+
+$fg-base: #000
+$fg-subtle: #999
+$fg-subtle-dark: #666
+$fg-active: #09f
+
+$bg-base: #fff
+$bg-dark: #f5f5f5
+
+$radius-small: 2px
+$radius-medium: 4px
+
+$tooltip-bg: rgba(0, 0, 0, 0.6)
+$tooltip-fg: #fff
+
+@mixin reset-button
+  background: none
+  outline: inherit
+  cursor: pointer
+  color: inherit
+  font: inherit
+  border: none
+  padding: 0
+
+@mixin transition($args...)
+  -webkit-transition: $args
+  -moz-transition: $args
+  -o-transition: $args
+  transition: $args
+
+@mixin default-transition($property)
+  @include transition($property 100ms ease-in-out)
+
+@mixin transform($args...)
+  -webkit-transform: $args
+  -moz-transform: $args
+  -ms-transform: $args
+  -o-transform: $args
+  transform: $args

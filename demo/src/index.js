@@ -1,15 +1,23 @@
-import React, {Component} from 'react'
-import {render} from 'react-dom'
+/**
+ * @author Timur Kuzhagaliyev <tim.kuzh@gmail.com>
+ * @copyright 2019
+ * @license MIT
+ */
 
-import Example from '../../src'
+import {render} from 'react-dom';
+import React, {Component} from 'react';
 
-class Demo extends Component {
-  render() {
-    return <div>
-      <h1>chonky Demo</h1>
-      <Example/>
-    </div>
-  }
+import './index.css';
+import FullDemo from './FullDemo';
+
+class App extends Component {
+
+    render() {
+        return <div>
+            <FullDemo/>
+        </div>;
+    }
+
 }
 
-render(<Demo/>, document.querySelector('#demo'))
+render(<App/>, document.querySelector('#root'));

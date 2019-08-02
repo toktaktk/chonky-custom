@@ -1,7 +1,20 @@
 {
   "name": "chonky",
-  "version": "1.0.0",
-  "description": "chonky React component",
+  "version": "0.0.2",
+  "description": "React file browser component",
+  "author": {
+    "name": "Timur Kuzhagaliyev",
+    "email": "tim.kuzh@gmail.com",
+    "url": "https://foxypanda.me/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TimboKZ/Chonky.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TimboKZ/Chonky/issues"
+  },
+  "homepage": "https://github.com/TimboKZ/Chonky#readme",
   "main": "lib/index.js",
   "module": "es/index.js",
   "files": [
@@ -19,20 +32,45 @@
     "test:coverage": "nwb test-react --coverage",
     "test:watch": "nwb test-react --server"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.20",
+    "@fortawesome/free-brands-svg-icons": "^5.10.0",
+    "@fortawesome/free-regular-svg-icons": "^5.10.0",
+    "@fortawesome/free-solid-svg-icons": "^5.10.0",
+    "@fortawesome/react-fontawesome": "^0.1.4",
+    "classnames": "^2.2.6",
+    "dateformat": "^3.0.3",
+    "denque": "^1.4.1",
+    "exact-trie": "^1.0.11",
+    "filesize": "^4.1.2",
+    "prop-types": "^15.7.2",
+    "react-if": "^3.4.3"
+  },
   "peerDependencies": {
-    "react": "16.x"
+    "react": "^15.0.0 || ^16.0.0",
+    "react-dom": "^15.0.0 || ^16.0.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/classnames": "^2.2.9",
+    "@types/dateformat": "^3.0.0",
+    "@types/filesize": "^4.1.0",
+    "@types/mocha": "^5.2.7",
+    "@types/react": "^16.8.24",
+    "@types/react-dom": "^16.8.5",
+    "awesome-typescript-loader": "^5.2.1",
+    "chai": "^4.2.0",
     "nwb": "0.23.x",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "typescript": "^3.5.3"
   },
-  "author": "",
-  "homepage": "",
   "license": "MIT",
-  "repository": "",
   "keywords": [
+    "file",
+    "chonky",
+    "file-dialog",
+    "file-browser",
     "react-component"
   ]
 }

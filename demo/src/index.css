@@ -1,0 +1,14 @@
+body {
+    background-color: #f2f2f2;
+    font-family: sans-serif;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.example-wrapper {
+    background-color: #fff;
+    border-radius: 3px;
+    padding: 10px;
+    min-height: 600px;
+}

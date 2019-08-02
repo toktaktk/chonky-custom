@@ -1,0 +1,31 @@
+@import "util"
+
+.chonky
+  &-view-details
+    border-collapse: collapse
+
+    th
+      border-bottom: solid 1px $border-dark
+      padding: 0.3em 0.4em
+      font-weight: normal
+      font-size: 0.9em
+      text-align: left
+
+      &:not(:last-child)
+        border-right: solid 1px $border-light
+
+    tr
+      td
+        font-size: 1.1em
+        padding: 0.4em
+
+        .chonky-file-name
+          span
+            color: $fg-subtle
+
+        &:not(:first-child)
+          font-size: 0.95em
+
+      &:not(:last-child)
+        td
+          border-bottom: solid 1px $border-light
