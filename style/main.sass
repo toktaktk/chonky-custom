@@ -17,6 +17,9 @@
   &-text-subtle
     color: $fg-subtle
 
+  &-text-subtle-light
+    color: $fg-subtle-light
+
   &-text-subtle-dark
     color: $fg-subtle-dark
 
@@ -60,3 +63,19 @@
 
       margin-bottom: 4px
       content: ''
+
+  &-loading-placeholder
+    @include animation(loading-placeholder 1.5s infinite linear)
+    background-color: $bg-dark
+    white-space: nowrap
+    border-radius: 4px
+    overflow: hidden
+    max-width: 40%
+
+  +keyframes(loading-placeholder)
+    0%
+      opacity: 0.2
+    50%
+      opacity: 0.4
+    100%
+      opacity: 0.2

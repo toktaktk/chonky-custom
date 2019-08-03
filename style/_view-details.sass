@@ -22,18 +22,24 @@
         border-bottom: solid 1px $border-light
         color: $fg-subtle-dark
 
+        &.chonky-active
+          border-bottom: solid 1px $border-darker
+
         &.chonky-clickable
           cursor: pointer
           &:hover
-            background-color: $bg-dark
+            background-color: $bg-light
 
     &-row
       &:hover
-        background-color: $bg-dark
+        background-color: $bg-light
 
       & > div
         border-bottom: solid 1px $border-lighter
+        vertical-align: middle
 
-        &:first-child
-          padding-right: 0.2em
-          font-size: 1.3em
+  &-view-details &-file
+    &-icon
+      padding-bottom: $table-side-padding * 0.6
+      padding-right: $table-side-padding * 0.5
+      font-size: 1.3em

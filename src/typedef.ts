@@ -6,6 +6,8 @@
 
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 
+export type Nullable<T> = T | null;
+
 export type FileData = {
     id: string;
 
@@ -13,19 +15,15 @@ export type FileData = {
     name: string; // Name without extension, e.g. `MyImage`
     ext: string; // Extension, e.g. `.jpg`
 
-    size: number;
-    modDate: Date;
+    size?: number;
+    modDate?: Date;
 
     isDir: boolean;
-    isHidden: boolean;
-    isSymLink: boolean;
+    isHidden?: boolean;
+    isSymLink?: boolean;
 
     parentId?: string;
-    childrenIds: string[];
-}
-
-export type FileMap = {
-    [id: string]: FileData,
+    childrenIds?: string[];
 }
 
 export type IconData = {

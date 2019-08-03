@@ -8,11 +8,13 @@ $border-darker: #aaa
 
 $fg-base: #000
 $fg-subtle: #bbb
+$fg-subtle-light: #ddd
 $fg-subtle-dark: #666
 $fg-active: #09f
 
 $bg-base: #fff
-$bg-dark: #f5f5f5
+$bg-light: #f5f5f5
+$bg-dark: #ccc
 
 $radius-small: 2px
 $radius-medium: 4px
@@ -44,6 +46,23 @@ $tooltip-fg: #fff
   -ms-transform: $args
   -o-transform: $args
   transform: $args
+
+=keyframes($name)
+  @-webkit-keyframes #{$name}
+    @content
+  @-moz-keyframes #{$name}
+    @content
+  @-ms-keyframes #{$name}
+    @content
+  @keyframes #{$name}
+    @content
+
+@mixin animation($args...)
+  -webkit-animation: $args
+  -moz-animation: $args
+  -o-animation: $args
+  animation: $args
+
 
 @mixin outline($outline-width, $outline-color, $outline-style, $outline-offset)
   outline: $outline-width $outline-color $outline-style

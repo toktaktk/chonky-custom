@@ -12,13 +12,25 @@ import {shallowEqualArrays, shallowEqualObjects} from 'shallow-equal';
 import FileList from './FileList';
 import Controls from './Controls';
 import {FileUtil} from './FileUtil';
-import {FileData, FolderView, Option, Options, SortOrder, SortProperty} from './typedef';
+import {
+    FileData,
+    FolderView,
+    Nullable,
+    Option,
+    Options,
+    SortOrder,
+    SortProperty,
+} from './typedef';
 
+// Important: Make sure to keep `FileBrowserProps` and `FileBrowserPropTypes` in sync!
 type FileBrowserProps = {
-    fileMap: { [id: string]: FileData };
+    files: Nullable<FileData>[];
+    folderChain?: Nullable<FileData>[];
 
-    folderId?: string;
-    fileIds?: string[];
+    doubleClickDelay?: number;
+    handleFileSingleClick?: (file: FileData, keyboard: boolean) => boolean | undefined;
+    handleFileDoubleClick?: (file: FileData, keyboard: boolean) => boolean | undefined;
+    handleFileOpen?: (file: FileData) => void;
 
     defaultView?: FolderView;
     defaultOptions?: Partial<Options>;
@@ -26,11 +38,15 @@ type FileBrowserProps = {
     defaultSortOrder?: SortOrder;
 }
 
+// Important: Make sure to keep `FileBrowserProps` and `FileBrowserPropTypes` in sync!
 const FileBrowserPropTypes = {
-    fileMap: PropTypes.object.isRequired,
+    files: PropTypes.array.isRequired,
+    folderChain: PropTypes.array,
 
-    folderId: PropTypes.string,
-    fileIds: PropTypes.arrayOf(PropTypes.string),
+    doubleClickDelay: PropTypes.number,
+    handleFileSingleClick: PropTypes.func,
+    handleFileDoubleClick: PropTypes.func,
+    handleFileOpen: PropTypes.func,
 
     defaultView: PropTypes.string,
     defaultOptions: PropTypes.object,
@@ -39,10 +55,9 @@ const FileBrowserPropTypes = {
 };
 
 type FileBrowserState = {
-    folderChain?: (FileData | null)[];
-    rawFiles: FileData[];
-    missingIds: string[];
-    sortedFiles: FileData[];
+    rawFiles: Nullable<FileData>[];
+    folderChain?: Nullable<FileData>[];
+    sortedFiles: Nullable<FileData>[];
 
     view: FolderView;
     options: Options;
@@ -54,12 +69,17 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
 
     static propTypes = FileBrowserPropTypes;
 
-    static defaultProps: Partial<FileBrowserProps> = {};
+    static defaultProps: Partial<FileBrowserProps> = {
+        doubleClickDelay: 300,
+    };
 
     constructor(props: FileBrowserProps) {
         super(props);
 
-        const {fileMap, folderId, fileIds: propFileIds, defaultView, defaultOptions, defaultSortProperty, defaultSortOrder} = props;
+        const {files, folderChain, defaultView, defaultOptions, defaultSortProperty, defaultSortOrder} = props;
+        const rawFiles = files.concat([null, null]);
+        const sortProperty = defaultSortProperty ? defaultSortProperty : SortProperty.Name;
+        const sortOrder = defaultSortOrder ? defaultSortOrder : SortOrder.Asc;
 
         const options = {
             [Option.ShowHidden]: true,
@@ -69,13 +89,10 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
             [Option.DisableSelection]: true,
             ...defaultOptions,
         };
-        const [rawFiles, missingIds] = FileUtil.prepareRawFiles(fileMap, folderId, propFileIds);
-        const sortProperty = defaultSortProperty ? defaultSortProperty : SortProperty.Name;
-        const sortOrder = defaultSortOrder ? defaultSortOrder : SortOrder.Asc;
+
         this.state = {
-            folderChain: folderId ? FileUtil.getFolderChain(fileMap, folderId) : undefined,
             rawFiles,
-            missingIds,
+            folderChain,
             sortedFiles: FileUtil.sortFiles(rawFiles, options, sortProperty, sortOrder),
             view: defaultView ? defaultView : FolderView.Details,
             options,
@@ -85,11 +102,13 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
     }
 
     componentWillReceiveProps(nextProps: Readonly<FileBrowserProps>): void {
-        const {fileMap: oldFileMap, folderId: oldFolderId, fileIds: oldFileIds} = this.props;
-        const {fileMap, folderId, fileIds} = nextProps;
-        if (fileMap !== oldFileMap || folderId !== oldFolderId || !shallowEqualArrays(fileIds, oldFileIds)) {
-            const [rawFiles, missingIds] = FileUtil.prepareRawFiles(fileMap, folderId, fileIds);
-            this.setState({rawFiles, missingIds});
+        const old = this.props;
+        const {files, folderChain} = nextProps;
+        if (!shallowEqualArrays(files, old.files)) {
+            this.setState({rawFiles: files});
+        }
+        if (!shallowEqualArrays(folderChain, old.folderChain)) {
+            this.setState({folderChain});
         }
     }
 
@@ -138,6 +157,7 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
     };
 
     render() {
+        const {handleFileOpen} = this.props;
         const {folderChain, sortedFiles, view, options, sortProperty, sortOrder} = this.state;
 
         const className = classnames({
@@ -146,8 +166,8 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
         });
         return (
             <div className={className}>
-                <Controls folderChain={folderChain} view={view} setView={this.setView}
-                          options={options} setOption={this.setOption}/>
+                <Controls folderChain={folderChain} handleFileOpen={handleFileOpen} view={view}
+                          setView={this.setView} options={options} setOption={this.setOption}/>
                 <FileList files={sortedFiles} view={view} sortProperty={sortProperty} sortOrder={sortOrder}
                           activateSortProperty={this.activateSortProperty}/>
             </div>

@@ -6,11 +6,11 @@
 
 import * as React from 'react';
 
-import {FileData, FolderView, SortOrder, SortProperty} from './typedef';
 import FileDetailsView from './FileDetailsView';
+import {FileData, FolderView, Nullable, SortOrder, SortProperty} from './typedef';
 
 type FileListProps = {
-    files: FileData[];
+    files: Nullable<FileData>[];
     view: FolderView;
     sortProperty: SortProperty;
     sortOrder: SortOrder;

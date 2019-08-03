@@ -16,6 +16,18 @@ What Chonky **does not** do is fetching information about the files. It is **you
 information, either by making Ajax request to your server, adding necessary FS logic to your Electron app or creating
 some virtual FS inside your web application.
 
+Notable Chonky features:
+* Lets users choose between 3 views: Details, medium thumbnails, large thumbnails.
+* Supports file selection and drag & drop.
+* Is file system agnostic - file data can come from any source as long as it follows the required format.
+* Supports callbacks for entering folders and opening, deleting or moving multiple files.
+* Supports async FS logic - via lazy loading and loading placeholders.
+* Supports file sorting and text search.
+* Supports [windowing](https://reactjs.org/docs/optimizing-performance.html#virtualize-long-lists) (a.k.a.
+virtualization) for long file lists.
+* Supports file thumbnails (e.g. generated from videos or images).
+* Detects common file types, showing appropriate icons.
+
 <p align="center">
   <img src="./Chonky_details_view.jpg" alt="Chonky details view">
 </p>

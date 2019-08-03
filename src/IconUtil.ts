@@ -7,10 +7,12 @@
 import ExactTrie from 'exact-trie';
 import {
     faBalanceScale,
+    faCircleNotch,
     faCode,
     faCogs,
     faCubes,
     faDatabase,
+    faExclamationTriangle,
     faFile,
     faFileAlt,
     faFileArchive,
@@ -33,9 +35,11 @@ import {
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {faAdobe, faGitAlt, faLinux, faNodeJs, faPhp, faPython, faUbuntu} from '@fortawesome/free-brands-svg-icons';
 
-import {IconData, ColorsLight, VideoExtensions, ImageExtensions, AudioExtensions, FileData} from './typedef';
+import {IconData, ColorsLight, VideoExtensions, ImageExtensions, AudioExtensions, FileData, Nullable} from './typedef';
 
-export const FolderIconData: IconData = {icon: faFolder, colorCode: 0};
+const ErrorIconData: IconData = {icon: faExclamationTriangle, colorCode: 1};
+export const LoadingIconData: IconData = {icon: faCircleNotch, colorCode: 0};
+const FolderIconData: IconData = {icon: faFolder, colorCode: 0};
 const FileIconData: IconData = {icon: faFile, colorCode: 32};
 const IconsToExtensions = [
     [faBalanceScale, ['license']],
@@ -83,7 +87,8 @@ for (const pair of IconsToExtensions) {
     }
 }
 
-export const getIconData = (file: FileData): IconData => {
+export const getIconData = (file: Nullable<FileData>): IconData => {
+    if (!file) return ErrorIconData;
     if (file.isDir) return FolderIconData;
 
     const match = exactTrie.getWithCheckpoints(file.base, '.', true);

@@ -16,8 +16,46 @@
   margin-bottom: 0.3em;
   display: flex;
 }
-.chonky-button-group {
+.chonky-folder-chain-entry, .chonky-folder-chain-separator {
+  vertical-align: middle;
   display: inline-block;
+}
+.chonky-folder-chain-entry {
+  -webkit-transition: background-color 100ms ease-in-out;
+  -moz-transition: background-color 100ms ease-in-out;
+  -o-transition: background-color 100ms ease-in-out;
+  transition: background-color 100ms ease-in-out;
+  border-radius: 4px;
+  border: solid 1px transparent;
+  line-height: 1.9em;
+  padding: 0 0.4em !important;
+  height: 1.9em;
+}
+.chonky-folder-chain-entry:last-child {
+  font-weight: bold;
+}
+.chonky-folder-chain-entry.chonky-loading {
+  font-style: italic;
+  color: #bbb;
+}
+button.chonky-folder-chain-entry {
+  background: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  border: none;
+  padding: 0;
+}
+button.chonky-folder-chain-entry:hover {
+  background-color: #f5f5f5;
+}
+button.chonky-folder-chain-entry:active {
+  border-color: #ccc;
+}
+
+.chonky-folder-chain-separator {
+  color: #bbb;
+  padding: 0 0.2em;
 }
 .chonky-button-group button:not(:first-child) {
   border-bottom-left-radius: 0;
@@ -29,7 +67,6 @@
   margin-right: -1px;
 }
 .chonky-dropdown {
-  display: inline-block;
   position: relative;
 }
 .chonky-dropdown.chonky-active .chonky-dropdown-contents, .chonky-dropdown:hover .chonky-dropdown-contents, .chonky-dropdown:active .chonky-dropdown-contents {
@@ -132,6 +169,9 @@
   border-bottom: solid 1px #e4e4e4;
   color: #666;
 }
+.chonky-view-details-header > div.chonky-active {
+  border-bottom: solid 1px #aaa;
+}
 .chonky-view-details-header > div.chonky-clickable {
   cursor: pointer;
 }
@@ -143,9 +183,11 @@
 }
 .chonky-view-details-row > div {
   border-bottom: solid 1px #f6f6f6;
+  vertical-align: middle;
 }
-.chonky-view-details-row > div:first-child {
-  padding-right: 0.2em;
+.chonky-view-details .chonky-file-icon {
+  padding-bottom: 0.36em;
+  padding-right: 0.3em;
   font-size: 1.3em;
 }
 
@@ -162,6 +204,9 @@
 }
 .chonky-text-subtle {
   color: #bbb;
+}
+.chonky-text-subtle-light {
+  color: #ddd;
 }
 .chonky-text-subtle-dark {
   color: #666;
@@ -215,6 +260,61 @@
   border-top-color: transparent;
   margin-bottom: 4px;
   content: "";
+}
+.chonky-loading-placeholder {
+  -webkit-animation: loading-placeholder 1.5s infinite linear;
+  -moz-animation: loading-placeholder 1.5s infinite linear;
+  -o-animation: loading-placeholder 1.5s infinite linear;
+  animation: loading-placeholder 1.5s infinite linear;
+  background-color: #ccc;
+  white-space: nowrap;
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 40%;
+}
+@-webkit-keyframes loading-placeholder {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+@-moz-keyframes loading-placeholder {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+@-ms-keyframes loading-placeholder {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+@keyframes loading-placeholder {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.2;
+  }
 }
 
 /*# sourceMappingURL=main.css.map */

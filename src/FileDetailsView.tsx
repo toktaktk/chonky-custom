@@ -5,21 +5,18 @@
  */
 
 import * as React from 'react';
-import filesize from 'filesize';
-import dateFormat from 'dateformat';
-import {If, Then, Else, When} from 'react-if';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import classnames from 'classnames';
 import {
     faArrowUp as AscIcon,
     faArrowDown as DescIcon,
-    faEyeSlash as HiddenIcon,
 } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
-import {getIconData} from './IconUtil';
-import {ColorsDark, FileData, SortOrder, SortProperty} from './typedef';
+import FileDetailsEntry from './FileDetailsEntry';
+import {FileData, Nullable, SortOrder, SortProperty} from './typedef';
 
 type FileDetailsViewProps = {
-    files: FileData[];
+    files: Nullable<FileData>[];
     sortProperty: SortProperty;
     sortOrder: SortOrder;
     activateSortProperty: (name: SortProperty) => void;
@@ -33,8 +30,6 @@ const HeaderDetails = [
     [SortProperty.Size, 'Size'],
     [SortProperty.ModDate, 'Last change'],
 ];
-const readableDate = (date: Date) => dateFormat(date, 'HH:MM, mmm d, yyyy');
-const readableSize = (size: number) => filesize(size, {bits: false, exponent: 1});
 
 export default class FileDetailsView extends React.Component<FileDetailsViewProps, FileDetailsViewState> {
 
@@ -51,7 +46,10 @@ export default class FileDetailsView extends React.Component<FileDetailsViewProp
             const [name, title] = HeaderDetails[i];
             const headerProps = !name ? {} : {
                 tabIndex: 0,
-                className: 'chonky-clickable',
+                className: classnames({
+                    'chonky-clickable': true,
+                    'chonky-active': sortProperty === name,
+                }),
                 onClick: () => activateSortProperty(name as SortProperty),
             };
             comps[i] = <div key={`header-${name}`} {...headerProps}>
@@ -67,45 +65,19 @@ export default class FileDetailsView extends React.Component<FileDetailsViewProp
         return <div className="chonky-view-details-header">{comps}</div>;
     }
 
-    static renderField(value: any, displayFunc: (value: any) => string) {
-        if (!value) return <span className="chonky-text-subtle">—</span>;
-        return displayFunc(value);
-    }
-
     renderRows() {
         const {files} = this.props;
         const comps = new Array(files.length);
+        let loadingCounter = 0;
         for (let i = 0; i < files.length; ++i) {
             const file = files[i];
-            const iconData = getIconData(file);
-            const style = {color: ColorsDark[iconData.colorCode]};
-            comps[i] = <div key={file.id} className="chonky-view-details-row" tabIndex={0}>
-                <div style={style}><FontAwesomeIcon icon={iconData.icon} fixedWidth/></div>
-                <div className="chonky-file-name">
-                    <When condition={file.isHidden}>
-                        <span className="chonky-text-subtle"><FontAwesomeIcon icon={HiddenIcon} size="xs"/></span>
-                        &nbsp;&nbsp;
-                    </When>
-                    <If condition={file.isDir}>
-                        <Then>
-                            {file.base}
-                            <span className="chonky-text-subtle" style={{marginLeft: 2}}>/</span>
-                        </Then>
-                        <Else>
-                            {file.name}
-                            <span className="chonky-text-subtle-dark">{file.ext}</span>
-                        </Else>
-                    </If>
-                </div>
-                <div>{FileDetailsView.renderField(file.size, readableSize)}</div>
-                <div>{FileDetailsView.renderField(file.modDate, readableDate)}</div>
-            </div>;
+            const key = file ? file.id : `loading-file-${loadingCounter++}`;
+            comps[i] = <FileDetailsEntry key={key} file={file}/>;
         }
         return comps;
     }
 
     render() {
-
         return <div className="chonky-view-details">
             {this.renderHeaders()}
             {this.renderRows()}
