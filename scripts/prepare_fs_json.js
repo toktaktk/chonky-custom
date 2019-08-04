@@ -73,6 +73,7 @@ const dirToFsTree = (dirPath, parentFile) => {
             for (const file of files) {
                 const skipFile = file.base === 'node_modules'
                     // || file.base === '.git'
+                    || file.base === 'public'
                     || file.base === '.idea';
                 if (skipFile) continue;
 

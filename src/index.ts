@@ -5,5 +5,6 @@
  */
 
 import FileBrowser from './FileBrowser';
+import {FolderView} from './typedef';
 
-export {FileBrowser};
+export {FileBrowser, FolderView};

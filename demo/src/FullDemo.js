@@ -11,7 +11,7 @@ import ReactNotification from 'react-notifications-component';
 
 import '../../style/main.css';
 import PageTitle from './PageTitle';
-import {FileBrowser} from '../../src';
+import {FileBrowser, FolderView} from '../../src';
 
 export default class FullDemo extends Component {
 
@@ -67,7 +67,9 @@ export default class FullDemo extends Component {
             <PageTitle/>
             <p>Chonky is a file browser component for React.</p>
             <div className="example-wrapper">
-                <FileBrowser files={files} folderChain={folderChain} onFileOpen={this.handleFileOpen}/>
+                <FileBrowser files={files} folderChain={folderChain}
+                             onFileOpen={this.handleFileOpen}
+                view={FolderView.SmallThumbs}/>
             </div>
         </div>;
     }

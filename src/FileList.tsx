@@ -10,8 +10,7 @@ import classnames from 'classnames';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faArrowDown as DescIcon, faArrowUp as AscIcon} from '@fortawesome/free-solid-svg-icons';
 
-import FileListEntryWrapper from './FileListEntryWrapper';
-import FileListEntryDetails from './FileListEntryDetails';
+import FileListEntry from './FileListEntry';
 import {FileClickHandler, FileData, FolderView, Nullable, Selection, SortOrder, SortProperty} from './typedef';
 
 type FileListProps = {
@@ -73,8 +72,6 @@ export default class FileList extends React.Component<FileListProps, FileListSta
 
     renderFileEntries() {
         const {files, selection, view, doubleClickDelay, onFileSingleClick, onFileDoubleClick} = this.props;
-        const isThumbs = view === FolderView.SmallThumbs || view === FolderView.LargeThumbs;
-        const CompToUse = isThumbs ? FileListEntryDetails : FileListEntryDetails;
 
         const comps = new Array(files.length);
         let loadingCounter = 0;
@@ -82,10 +79,10 @@ export default class FileList extends React.Component<FileListProps, FileListSta
             const file = files[i];
             const key = file ? file.id : `loading-file-${loadingCounter++}`;
             const selected = file ? !!selection[file.id] : false;
-            comps[i] = <FileListEntryWrapper key={key} selected={selected} file={file} displayIndex={i}
-                                             render={CompToUse} doubleClickDelay={doubleClickDelay}
-                                             onFileSingleClick={onFileSingleClick}
-                                             onFileDoubleClick={onFileDoubleClick}/>;
+            comps[i] = <FileListEntry key={key} selected={selected} file={file} displayIndex={i}
+                                      view={view} doubleClickDelay={doubleClickDelay}
+                                      onFileSingleClick={onFileSingleClick}
+                                      onFileDoubleClick={onFileDoubleClick}/>;
         }
         return comps;
     }

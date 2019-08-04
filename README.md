@@ -29,9 +29,9 @@ virtualization) for long file lists.
 * Supports file thumbnails (e.g. generated from videos or images).
 * Detects common file types, showing appropriate icons.
 
-<p align="center">
-  <img src="./Chonky_details_view.jpg" alt="Chonky details view">
-</p>
+| Details view                                      | Thumbnail view                                     |
+|---------------------------------------------------|----------------------------------------------------|
+| ![Chonky details view](./Chonky_details_view.jpg) | ![Chonky thumbnail view](./Chonky_thumbs_view.jpg) |
 
 
 ## Notes

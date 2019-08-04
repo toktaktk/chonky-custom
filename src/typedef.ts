@@ -26,20 +26,6 @@ export type FileData = {
     childrenIds?: string[];
 }
 
-export type DisplayFileData = {
-    id: string,
-
-    base: string;
-    name: string;
-    ext: string;
-
-    size: Nullable<string>;
-    modDate: Nullable<string>;
-
-    isDir: boolean;
-    isHidden: boolean;
-}
-
 export type Selection = {
     [fileId: string]: boolean | undefined,
 };
@@ -62,15 +48,14 @@ export type ClickEvent = {
 
 export type FileClickHandler<T = void> = (file: FileData, fileIndex: number, event: ClickEvent, keyboard: boolean) => T;
 
-export type FileListEntryProps = {
-    displayFile: Nullable<DisplayFileData>;
-    iconData: IconData;
-}
-
 export enum FolderView {
     Details = 'view-details',
     SmallThumbs = 'view-small-thumbs',
     LargeThumbs = 'view-large-thumbs',
+}
+
+export type FolderViewSizeMap = {
+    [view: string]: { width: number, height: number }
 }
 
 export enum Option {
