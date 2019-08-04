@@ -14,8 +14,8 @@ import {
     faThLarge,
     faFolderPlus,
     faCheckCircle,
-    faArrowLeft as iconPathBack,
-    faArrowRight as iconPathForward,
+    // faArrowLeft as iconPathBack,
+    // faArrowRight as iconPathForward,
     faLevelUpAlt as iconPathParentDir,
     faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
@@ -31,7 +31,7 @@ import {FileData, FolderView, Option, Options} from './typedef';
 type ControlsProps = {
     folderChain?: (FileData | null)[];
 
-    handleFileOpen?: (file: FileData) => void;
+    onFileOpen?: (file: FileData) => void;
 
     view: FolderView;
     setView: (view: FolderView) => void;
@@ -64,7 +64,7 @@ export default class Controls extends React.Component<ControlsProps, ControlsSta
     }
 
     renderFolderChain() {
-        const {folderChain, handleFileOpen} = this.props;
+        const {folderChain, onFileOpen} = this.props;
         if (!folderChain) return null;
 
         const comps = new Array(folderChain.length * 2 - 1);
@@ -80,14 +80,14 @@ export default class Controls extends React.Component<ControlsProps, ControlsSta
                     'chonky-loading': !folder,
                 }),
             };
-            if (folder && handleFileOpen && !isLast) compProps.onClick = () => handleFileOpen(folder);
+            if (folder && onFileOpen && !isLast) compProps.onClick = () => onFileOpen(folder);
 
             const TagToUse = compProps.onClick ? 'button' : 'div';
             comps[j] = <TagToUse {...compProps} >
                 {j === 0 && <span className="chonky-text-subtle-dark">
                     <FontAwesomeIcon icon={faFolder}/>&nbsp;&nbsp;
                 </span>}
-                {folder ? folder.name : 'Loading...'}
+                <span className="chonky-folder-chain-entry-name">{folder ? folder.name : 'Loading...'}</span>
             </TagToUse>;
             if (!isLast) {
                 comps[j + 1] = <div key={`folder-chain-separator-${j}`} className="chonky-folder-chain-separator">
@@ -124,12 +124,19 @@ export default class Controls extends React.Component<ControlsProps, ControlsSta
     }
 
     render() {
+        const {folderChain, onFileOpen} = this.props;
+        const parentDirButtonProps: any = {};
+        if (onFileOpen && folderChain && folderChain.length > 1) {
+            const parentFolder = folderChain[folderChain.length - 2];
+            if (parentFolder) parentDirButtonProps.onClick = () => onFileOpen(parentFolder);
+        }
+
         return <div className="chonky-controls">
             <div className="chonky-side chonky-side-left">
                 <ButtonGroup>
-                    <IconButton icon={iconPathBack}/>
-                    <IconButton icon={iconPathForward}/>
-                    <IconButton icon={iconPathParentDir}/>
+                    {/*<IconButton icon={iconPathBack}/>*/}
+                    {/*<IconButton icon={iconPathForward}/>*/}
+                    <IconButton icon={iconPathParentDir} {...parentDirButtonProps}/>
                 </ButtonGroup>
                 {this.renderFolderChain()}
             </div>

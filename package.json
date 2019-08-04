@@ -1,6 +1,6 @@
 {
   "name": "chonky",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React file browser component",
   "author": {
     "name": "Timur Kuzhagaliyev",
@@ -60,12 +60,16 @@
     "@types/mocha": "^5.2.7",
     "@types/react": "^16.8.24",
     "@types/react-dom": "^16.8.5",
+    "animate.css": "^3.7.2",
     "awesome-typescript-loader": "^5.2.1",
     "chai": "^4.2.0",
+    "fs-thumbnail": "^1.0.5",
     "md5": "^2.2.1",
     "nwb": "0.23.x",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-notifications-component": "^1.1.1",
+    "sharp": "^0.23.0",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"
   },

@@ -10,13 +10,14 @@
 
 Chonky is a file browser component for React. It tries to recreate the native file browsing experience in your browser.
 This means your users can make selections, drag & drop files, toggle file view between "large thumbnails" and "detailed
-list", enter folders, and so on.
+list", enter folders, and so on. [Click here to see a demo.](https://timbokz.github.io/Chonky/)
 
 What Chonky **does not** do is fetching information about the files. It is **your** responsibility to provide file
 information, either by making Ajax request to your server, adding necessary FS logic to your Electron app or creating
 some virtual FS inside your web application.
 
-Notable Chonky features:
+### Notable Chonky features:
+
 * Lets users choose between 3 views: Details, medium thumbnails, large thumbnails.
 * Supports file selection and drag & drop.
 * Is file system agnostic - file data can come from any source as long as it follows the required format.
@@ -31,6 +32,13 @@ virtualization) for long file lists.
 <p align="center">
   <img src="./Chonky_details_view.jpg" alt="Chonky details view">
 </p>
+
+
+## Notes
+
+* It's a good idea to ask your users for confirmation before doing any FS manipulations in file operation handlers. 
+For example, you could show a confirm dialog asking "Are you sure?" before moving or deleting files.
+
 
 ## Install
 

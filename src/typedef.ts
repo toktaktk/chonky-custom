@@ -26,9 +26,45 @@ export type FileData = {
     childrenIds?: string[];
 }
 
+export type DisplayFileData = {
+    id: string,
+
+    base: string;
+    name: string;
+    ext: string;
+
+    size: Nullable<string>;
+    modDate: Nullable<string>;
+
+    isDir: boolean;
+    isHidden: boolean;
+}
+
+export type Selection = {
+    [fileId: string]: boolean | undefined,
+};
+
+export enum SelectionType {
+    Single,
+    Multiple,
+    Range,
+}
+
 export type IconData = {
     icon: IconProp;
     colorCode: number;
+}
+
+export type ClickEvent = {
+    ctrlKey: boolean,
+    shiftKey: boolean,
+}
+
+export type FileClickHandler<T = void> = (file: FileData, fileIndex: number, event: ClickEvent, keyboard: boolean) => T;
+
+export type FileListEntryProps = {
+    displayFile: Nullable<DisplayFileData>;
+    iconData: IconData;
 }
 
 export enum FolderView {

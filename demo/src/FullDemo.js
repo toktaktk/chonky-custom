@@ -4,17 +4,14 @@
  * @license MIT
  */
 
-import '../../style/main.css';
-import {FileBrowser} from '../../src';
+import 'animate.css/animate.min.css';
 import React, {Component} from 'react';
+import 'react-notifications-component/dist/theme.css';
+import ReactNotification from 'react-notifications-component';
 
-import {fileMap, rootFolderId} from './chonky_project_fs';
+import '../../style/main.css';
 import PageTitle from './PageTitle';
-
-for (const fileId in fileMap) {
-    if (!fileMap.hasOwnProperty(fileId)) continue;
-    fileMap[fileId].modDate = new Date(fileMap[fileId].modDate);
-}
+import {FileBrowser} from '../../src';
 
 export default class FullDemo extends Component {
 
@@ -22,19 +19,37 @@ export default class FullDemo extends Component {
         super(props);
 
         this.state = {
-            currentFolderId: fileMap[rootFolderId].childrenIds[0],
+            currentFolderId: props.rootFolderId,
         };
+        this.notifRef = React.createRef();
     }
 
-    openFile = file => {
+    showNotification(type, title, message) {
+        if (!this.notifRef.current) return;
+        this.notifRef.current.addNotification({
+            type,
+            title,
+            message,
+            insert: 'top',
+            container: 'top-right',
+            animationIn: ['animated', 'fadeIn'],
+            animationOut: ['animated', 'fadeOut'],
+            dismiss: {duration: 6000},
+            dismissable: {click: true},
+        });
+    }
+
+    handleFileOpen = file => {
         if (file.isDir) {
             this.setState({currentFolderId: file.id});
         } else {
-
+            this.showNotification('success', `Open: \`${file.base}\``,
+                `You just tried to open a ${file.isDir ? 'folder' : 'file'}.`);
         }
     };
 
     render() {
+        const {fileMap} = this.props;
         const {currentFolderId} = this.state;
         const folder = fileMap[currentFolderId];
 
@@ -48,10 +63,11 @@ export default class FullDemo extends Component {
         }
 
         return <div>
+            <ReactNotification ref={this.notifRef}/>
             <PageTitle/>
             <p>Chonky is a file browser component for React.</p>
             <div className="example-wrapper">
-                <FileBrowser files={files} folderChain={folderChain} handleFileOpen={this.openFile}/>
+                <FileBrowser files={files} folderChain={folderChain} onFileOpen={this.handleFileOpen}/>
             </div>
         </div>;
     }

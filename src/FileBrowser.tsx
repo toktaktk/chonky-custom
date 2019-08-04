@@ -13,14 +13,19 @@ import FileList from './FileList';
 import Controls from './Controls';
 import {FileUtil} from './FileUtil';
 import {
+    ClickEvent,
+    FileClickHandler,
     FileData,
     FolderView,
     Nullable,
     Option,
     Options,
+    Selection,
+    SelectionType,
     SortOrder,
     SortProperty,
 } from './typedef';
+import {isNumber} from 'util';
 
 // Important: Make sure to keep `FileBrowserProps` and `FileBrowserPropTypes` in sync!
 type FileBrowserProps = {
@@ -28,14 +33,19 @@ type FileBrowserProps = {
     folderChain?: Nullable<FileData>[];
 
     doubleClickDelay?: number;
-    handleFileSingleClick?: (file: FileData, keyboard: boolean) => boolean | undefined;
-    handleFileDoubleClick?: (file: FileData, keyboard: boolean) => boolean | undefined;
-    handleFileOpen?: (file: FileData) => void;
+    onFileSingleClick?: FileClickHandler<boolean>;
+    onFileDoubleClick?: FileClickHandler<boolean>;
+    onFileOpen?: (file: FileData) => void;
+    onSelectionChange?: (selection: Selection) => void;
 
-    defaultView?: FolderView;
-    defaultOptions?: Partial<Options>;
-    defaultSortProperty?: SortProperty;
-    defaultSortOrder?: SortOrder;
+    thumbnailGenerator?: (file: FileData) => Promise<Nullable<string>> | Nullable<string>,
+
+    selection?: Selection,
+    disableSelection?: boolean,
+    view?: FolderView;
+    options?: Partial<Options>;
+    sortProperty?: SortProperty;
+    sortOrder?: SortOrder;
 }
 
 // Important: Make sure to keep `FileBrowserProps` and `FileBrowserPropTypes` in sync!
@@ -44,20 +54,28 @@ const FileBrowserPropTypes = {
     folderChain: PropTypes.array,
 
     doubleClickDelay: PropTypes.number,
-    handleFileSingleClick: PropTypes.func,
-    handleFileDoubleClick: PropTypes.func,
-    handleFileOpen: PropTypes.func,
+    onFileSingleClick: PropTypes.func,
+    onFileDoubleClick: PropTypes.func,
+    onFileOpen: PropTypes.func,
+    onSelectionChange: PropTypes.func,
 
-    defaultView: PropTypes.string,
-    defaultOptions: PropTypes.object,
-    defaultSortProperty: PropTypes.string,
-    defaultSortOrder: PropTypes.string,
+    thumbnailGenerator: PropTypes.func,
+
+    selection: PropTypes.object,
+    disableSelection: PropTypes.bool,
+    view: PropTypes.string,
+    options: PropTypes.object,
+    sortProperty: PropTypes.string,
+    sortOrder: PropTypes.string,
 };
 
 type FileBrowserState = {
     rawFiles: Nullable<FileData>[];
     folderChain?: Nullable<FileData>[];
     sortedFiles: Nullable<FileData>[];
+
+    previousSelectionIndex?: number;
+    selection: Selection;
 
     view: FolderView;
     options: Options;
@@ -76,25 +94,31 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
     constructor(props: FileBrowserProps) {
         super(props);
 
-        const {files, folderChain, defaultView, defaultOptions, defaultSortProperty, defaultSortOrder} = props;
-        const rawFiles = files.concat([null, null]);
-        const sortProperty = defaultSortProperty ? defaultSortProperty : SortProperty.Name;
-        const sortOrder = defaultSortOrder ? defaultSortOrder : SortOrder.Asc;
+        const {
+            files: rawFiles, folderChain, selection: propSelection, view: propView,
+            options: propOptions, sortProperty: propSortProperty, sortOrder: propSortOrder,
+        } = props;
+        // const rawFiles = files.concat([null, null]);
 
+        const selection = propSelection ? propSelection : {};
+        const view = propView ? propView : FolderView.Details;
         const options = {
             [Option.ShowHidden]: true,
             [Option.FoldersFirst]: true,
             [Option.ShowExtensions]: true,
             [Option.ConfirmDeletions]: true,
             [Option.DisableSelection]: true,
-            ...defaultOptions,
+            ...propOptions,
         };
+        const sortProperty = propSortProperty ? propSortProperty : SortProperty.Name;
+        const sortOrder = propSortOrder ? propSortOrder : SortOrder.Asc;
 
         this.state = {
             rawFiles,
             folderChain,
             sortedFiles: FileUtil.sortFiles(rawFiles, options, sortProperty, sortOrder),
-            view: defaultView ? defaultView : FolderView.Details,
+            selection,
+            view,
             options,
             sortProperty,
             sortOrder,
@@ -103,13 +127,30 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
 
     componentWillReceiveProps(nextProps: Readonly<FileBrowserProps>): void {
         const old = this.props;
-        const {files, folderChain} = nextProps;
+        const state = this.state;
+        const {files, folderChain, selection, disableSelection, view, options, sortProperty, sortOrder} = nextProps;
         if (!shallowEqualArrays(files, old.files)) {
-            this.setState({rawFiles: files});
+            this.setState(prevState => {
+                const newSelection = {};
+                files.map(f => {
+                    if (f && prevState.selection[f.id] === true) newSelection[f.id] = true;
+                });
+                return {rawFiles: files, selection: newSelection};
+            });
         }
-        if (!shallowEqualArrays(folderChain, old.folderChain)) {
-            this.setState({folderChain});
+        if (!shallowEqualArrays(folderChain, old.folderChain)) this.setState({folderChain});
+
+        if (!shallowEqualObjects(selection, old.selection) && !shallowEqualObjects(selection, state.selection)) {
+            this.setState({selection: {...selection}});
         }
+
+        if (disableSelection && disableSelection !== old.disableSelection) this.setState({selection: {}});
+        if (!!view && view !== old.view) this.setState({view});
+        if (!!options && options !== old.options) {
+            this.setState(prevState => ({options: {...prevState.options, ...options}}));
+        }
+        if (!!sortProperty && sortProperty !== old.sortProperty) this.setState({sortProperty});
+        if (!!sortOrder && sortOrder !== old.sortOrder) this.setState({sortOrder});
     }
 
     componentDidUpdate(prevProps: Readonly<FileBrowserProps>, prevState: Readonly<FileBrowserState>,
@@ -156,9 +197,72 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
         });
     };
 
+    handleFileSingleClick: FileClickHandler = (file: FileData, displayIndex: number,
+                                               event: ClickEvent, keyboard: boolean) => {
+        const {onFileSingleClick, onSelectionChange, disableSelection} = this.props;
+
+        // Prevent default behaviour if user's handler returns `true`
+        let preventDefault = false;
+        if (onFileSingleClick) {
+            const funcResult = onFileSingleClick(file, displayIndex, event, keyboard) as boolean | undefined;
+            preventDefault = funcResult === true;
+        }
+        if (preventDefault) return;
+        if (disableSelection) return;
+
+        this.setState(prevState => {
+            const {sortedFiles, selection: oldSelection, previousSelectionIndex: prevI} = prevState;
+            const prevIndex = isNumber(prevI) ? Math.max(0, Math.min(sortedFiles.length - 1, prevI)) : null;
+
+            let type = SelectionType.Single;
+            if (event.ctrlKey) type = SelectionType.Multiple;
+            if (event.shiftKey && isNumber(prevIndex)) type = SelectionType.Range;
+
+            let newSelection: Selection = {};
+            const oldSelected = oldSelection[file.id];
+            switch (type) {
+                case SelectionType.Single:
+                    newSelection[file.id] = true;
+                    break;
+                case SelectionType.Multiple:
+                    newSelection = {...oldSelection};
+                    if (oldSelected === true) delete newSelection[file.id];
+                    else newSelection[file.id] = true;
+                    break;
+                case SelectionType.Range:
+                    let indexA = prevIndex as number;
+                    let indexB = displayIndex;
+                    if (indexA > indexB) [indexA, indexB] = [indexB, indexA];
+                    for (let i = indexA; i < indexB + 1; ++i) {
+                        const file = sortedFiles[i];
+                        if (file) newSelection[file.id] = true;
+                    }
+                    break;
+            }
+
+            if (onSelectionChange) onSelectionChange(newSelection);
+            return {selection: newSelection, previousSelectionIndex: displayIndex};
+        });
+    };
+
+    handleFileDoubleClick: FileClickHandler = (file: FileData, displayIndex: number,
+                                               event: ClickEvent, keyboard: boolean) => {
+        const {onFileDoubleClick, onFileOpen} = this.props;
+
+        // Prevent default behaviour if user's handler returns `true`
+        let preventDefault = false;
+        if (onFileDoubleClick) {
+            const funcResult = onFileDoubleClick(file, displayIndex, event, keyboard) as boolean | undefined;
+            preventDefault = funcResult === true;
+        }
+        if (preventDefault) return;
+
+        if (onFileOpen) onFileOpen(file);
+    };
+
     render() {
-        const {handleFileOpen} = this.props;
-        const {folderChain, sortedFiles, view, options, sortProperty, sortOrder} = this.state;
+        const {doubleClickDelay, onFileOpen} = this.props;
+        const {folderChain, sortedFiles, selection, view, options, sortProperty, sortOrder} = this.state;
 
         const className = classnames({
             'chonky': true,
@@ -166,10 +270,14 @@ export default class FileBrowser extends React.Component<FileBrowserProps, FileB
         });
         return (
             <div className={className}>
-                <Controls folderChain={folderChain} handleFileOpen={handleFileOpen} view={view}
+                <Controls folderChain={folderChain} onFileOpen={onFileOpen} view={view}
                           setView={this.setView} options={options} setOption={this.setOption}/>
-                <FileList files={sortedFiles} view={view} sortProperty={sortProperty} sortOrder={sortOrder}
-                          activateSortProperty={this.activateSortProperty}/>
+                <FileList files={sortedFiles} selection={selection} view={view}
+                          sortProperty={sortProperty} sortOrder={sortOrder}
+                          activateSortProperty={this.activateSortProperty}
+                          doubleClickDelay={doubleClickDelay as number}
+                          onFileSingleClick={this.handleFileSingleClick}
+                          onFileDoubleClick={this.handleFileDoubleClick}/>
             </div>
         );
     }
