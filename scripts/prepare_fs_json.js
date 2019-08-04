@@ -18,14 +18,15 @@ const thumbGen = new ThumbnailGenerator({verbose: false, size: 300, quality: 60}
 const readFile = (filePath, parentFile) => {
     const id = getFileId(filePath);
     const parsed = path.parse(filePath);
-    let hasThumbnail = false;
+    let thumbnailUrl = undefined;
+    const thumbName = `${parsed.name}.jpg`;
     return Promise.resolve()
         .then(() => thumbGen.getThumbnail({
             path: filePath,
-            output: path.join(thumbDirPath, `${parsed.name}.jpg`),
+            output: path.join(thumbDirPath, thumbName),
         }))
         .then(thumbnailPath => {
-            if (thumbnailPath) hasThumbnail = true;
+            thumbnailUrl = thumbnailPath ? `./thumbnails/${thumbName}` : undefined;
         })
         .then(() => fs.lstat(filePath))
         .then(stats => {
@@ -38,6 +39,7 @@ const readFile = (filePath, parentFile) => {
 
                 size: stats.isDirectory() ? null : stats.size,
                 modDate: stats.ctime,
+                thumbnailUrl,
 
                 isDir: stats.isDirectory(),
                 isHidden: parsed.name.charAt(0) === '.',
@@ -46,8 +48,6 @@ const readFile = (filePath, parentFile) => {
                 parentId: parentFile ? parentFile.id : null,
                 childrenIds: [],
 
-                // Custom fields, not required/supported by Chonky
-                hasThumbnail,
             };
         });
 };

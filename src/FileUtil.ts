@@ -4,9 +4,21 @@
  * @license MIT
  */
 
+import filesize from 'filesize';
+import dateFormat from 'dateformat';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+
 import {FileData, Nullable, Option, Options, SortOrder, SortProperty} from './typedef';
 
+TimeAgo.addLocale(en);
+const timeAgo = new TimeAgo('en-US');
+
 export class FileUtil {
+
+    static relativeDate = (date: Date) => timeAgo.format(date);
+    static readableDate = (date: Date) => dateFormat(date, 'HH:MM, mmm d, yyyy');
+    static readableSize = (size: number) => filesize(size, {bits: false, exponent: 1});
 
     static prepareComparator = (foldersFirst: boolean, sortProperty: SortProperty, sortOrder: SortOrder) => {
         return (fileA: Nullable<FileData>, fileB: Nullable<FileData>) => {

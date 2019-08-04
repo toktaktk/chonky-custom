@@ -23,7 +23,7 @@ import {
     Selection,
     SelectionType,
     SortOrder,
-    SortProperty,
+    SortProperty, ThumbnailGenerator,
 } from './typedef';
 import {isNumber} from 'util';
 
@@ -38,7 +38,7 @@ type FileBrowserProps = {
     onFileOpen?: (file: FileData) => void;
     onSelectionChange?: (selection: Selection) => void;
 
-    thumbnailGenerator?: (file: FileData) => Promise<Nullable<string>> | Nullable<string>,
+    thumbnailGenerator?: ThumbnailGenerator,
 
     selection?: Selection,
     disableSelection?: boolean,

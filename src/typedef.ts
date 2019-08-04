@@ -17,6 +17,7 @@ export type FileData = {
 
     size?: number;
     modDate?: Date;
+    thumbnailUrl?: string;
 
     isDir: boolean;
     isHidden?: boolean;
@@ -47,6 +48,8 @@ export type ClickEvent = {
 }
 
 export type FileClickHandler<T = void> = (file: FileData, fileIndex: number, event: ClickEvent, keyboard: boolean) => T;
+
+export type ThumbnailGenerator = (file: FileData) => Promise<Nullable<string>> | Nullable<string>;
 
 export enum FolderView {
     Details = 'view-details',
@@ -290,7 +293,7 @@ export const AudioExtensions: string[] = [
     'xm',
 ];
 export const ColorsLight: string[] = [
-    '#eee',
+    '#bbbbbb',
     '#d65c5c',
     '#d6665c',
     '#d6705c',

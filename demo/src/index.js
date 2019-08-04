@@ -11,6 +11,7 @@ import './index.css';
 import FullDemo from './FullDemo';
 import {fileMap as picsFileMap, rootFolderId as picsFolderId} from './fs_japan_pics';
 import {fileMap as chonkyFileMap, rootFolderId as chonkyFolderId} from './fs_chonky_project';
+import PageTitle from './PageTitle';
 
 const processFileMapDates = fileMap => {
     for (const fileId in fileMap) {
@@ -54,6 +55,8 @@ class App extends Component {
 
     render() {
         return <div>
+            <PageTitle/>
+            <p>Chonky is a file browser component for React.</p>
             <FullDemo fileMap={fileMap} rootFolderId={rootFolderId}/>
         </div>;
     }

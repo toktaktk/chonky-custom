@@ -7,13 +7,12 @@
       "name": "Chonky",
       "ext": "",
       "size": null,
-      "modDate": "2019-08-04T00:54:44.444Z",
+      "modDate": "2019-08-04T03:13:09.037Z",
       "isDir": true,
       "isHidden": false,
       "isSymlink": false,
       "parentId": null,
-      "childrenIds": [],
-      "hasThumbnail": false
+      "childrenIds": []
     },
     "0b9e8a6706d9": {
       "id": "0b9e8a6706d9",
@@ -34,8 +33,7 @@
         "71b9f6fa4e92",
         "df72d20ae06d",
         "ae448f09934f"
-      ],
-      "hasThumbnail": false
+      ]
     },
     "2927d99637cc": {
       "id": "2927d99637cc",
@@ -44,12 +42,12 @@
       "ext": ".jpg",
       "size": 546247,
       "modDate": "2019-08-04T00:45:57.010Z",
+      "thumbnailUrl": "./thumbnails/Kyoto Station.jpg",
       "isDir": false,
       "isHidden": false,
       "isSymlink": false,
       "parentId": "0b9e8a6706d9",
-      "childrenIds": [],
-      "hasThumbnail": true
+      "childrenIds": []
     },
     "bb2b9350a62a": {
       "id": "bb2b9350a62a",
@@ -58,12 +56,12 @@
       "ext": ".jpg",
       "size": 1699335,
       "modDate": "2019-08-04T00:45:14.234Z",
+      "thumbnailUrl": "./thumbnails/Kyoto Vibes.jpg",
       "isDir": false,
       "isHidden": false,
       "isSymlink": false,
       "parentId": "0b9e8a6706d9",
-      "childrenIds": [],
-      "hasThumbnail": true
+      "childrenIds": []
     },
     "5c32605f67be": {
       "id": "5c32605f67be",
@@ -72,12 +70,12 @@
       "ext": ".jpg",
       "size": 981549,
       "modDate": "2019-08-04T00:45:45.910Z",
+      "thumbnailUrl": "./thumbnails/Kyoto.jpg",
       "isDir": false,
       "isHidden": false,
       "isSymlink": false,
       "parentId": "0b9e8a6706d9",
-      "childrenIds": [],
-      "hasThumbnail": true
+      "childrenIds": []
     },
     "632e30fca596": {
       "id": "632e30fca596",
@@ -86,12 +84,12 @@
       "ext": ".jpg",
       "size": 225062,
       "modDate": "2019-08-04T00:44:32.960Z",
+      "thumbnailUrl": "./thumbnails/Little Japanese neighborhood.jpg",
       "isDir": false,
       "isHidden": false,
       "isSymlink": false,
       "parentId": "0b9e8a6706d9",
-      "childrenIds": [],
-      "hasThumbnail": true
+      "childrenIds": []
     },
     "71b9f6fa4e92": {
       "id": "71b9f6fa4e92",
@@ -100,12 +98,12 @@
       "ext": ".jpg",
       "size": 929880,
       "modDate": "2019-08-04T00:45:31.314Z",
+      "thumbnailUrl": "./thumbnails/Mt. Fuji.jpg",
       "isDir": false,
       "isHidden": false,
       "isSymlink": false,
       "parentId": "0b9e8a6706d9",
-      "childrenIds": [],
-      "hasThumbnail": true
+      "childrenIds": []
     },
     "df72d20ae06d": {
       "id": "df72d20ae06d",
@@ -114,12 +112,12 @@
       "ext": ".jpg",
       "size": 1036620,
       "modDate": "2019-08-04T00:44:55.204Z",
+      "thumbnailUrl": "./thumbnails/Tokyo Skytree.jpg",
       "isDir": false,
       "isHidden": false,
       "isSymlink": false,
       "parentId": "0b9e8a6706d9",
-      "childrenIds": [],
-      "hasThumbnail": true
+      "childrenIds": []
     },
     "ae448f09934f": {
       "id": "ae448f09934f",
@@ -128,12 +126,12 @@
       "ext": ".jpg",
       "size": 594389,
       "modDate": "2019-08-04T00:45:02.500Z",
+      "thumbnailUrl": "./thumbnails/Yoshinoyama.jpg",
       "isDir": false,
       "isHidden": false,
       "isSymlink": false,
       "parentId": "0b9e8a6706d9",
-      "childrenIds": [],
-      "hasThumbnail": true
+      "childrenIds": []
     }
   }
 }

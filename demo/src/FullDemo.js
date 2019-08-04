@@ -10,7 +10,6 @@ import 'react-notifications-component/dist/theme.css';
 import ReactNotification from 'react-notifications-component';
 
 import '../../style/main.css';
-import PageTitle from './PageTitle';
 import {FileBrowser, FolderView} from '../../src';
 
 export default class FullDemo extends Component {
@@ -48,6 +47,10 @@ export default class FullDemo extends Component {
         }
     };
 
+    generateThumbnail() {
+
+    }
+
     render() {
         const {fileMap} = this.props;
         const {currentFolderId} = this.state;
@@ -64,12 +67,9 @@ export default class FullDemo extends Component {
 
         return <div>
             <ReactNotification ref={this.notifRef}/>
-            <PageTitle/>
-            <p>Chonky is a file browser component for React.</p>
             <div className="example-wrapper">
                 <FileBrowser files={files} folderChain={folderChain}
-                             onFileOpen={this.handleFileOpen}
-                view={FolderView.SmallThumbs}/>
+                             onFileOpen={this.handleFileOpen} view={FolderView.SmallThumbs}/>
             </div>
         </div>;
     }

@@ -1,6 +1,5 @@
 body {
-    /*background-color: #f2f2f2;*/
-    background-color: #cccccc;
+    background-color: #f2f2f2;
     font-family: sans-serif;
     max-width: 1280px;
     margin: 0 auto;
@@ -11,7 +10,6 @@ body {
     background-color: #fff;
     border-radius: 3px;
     padding: 10px;
-    min-height: 600px;
 }
 
 @charset "UTF-8";
@@ -276,40 +274,49 @@ button.chonky-folder-chain-entry:active {
           flex: 1;
 }
 .chonky-file-list-thumbs .chonky-file-list-entry-background {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.6);
   position: absolute;
   height: 100%;
   width: 100%;
   z-index: 1;
 }
-.chonky-file-list-thumbs .chonky-file-list-entry-image {
+.chonky-file-list-thumbs .chonky-file-list-entry .chonky-file-list-entry-image-bg, .chonky-file-list-thumbs .chonky-file-list-entry .chonky-file-list-entry-image-fg {
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
   position: absolute;
   height: 100%;
   width: 100%;
+}
+.chonky-file-list-thumbs .chonky-file-list-entry-image-bg {
+  background-size: cover;
+  opacity: 0.1;
   z-index: 2;
 }
-.chonky-file-list-thumbs .chonky-file-list-entry-icon {
+.chonky-file-list-thumbs .chonky-file-list-entry-image-fg {
+  background-size: contain;
   z-index: 3;
+}
+.chonky-file-list-thumbs .chonky-file-list-entry-icon {
+  z-index: 4;
   -webkit-transform: translateX(-50%) translateY(-50%);
   -ms-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
-  background-color: rgba(136, 136, 136, 0.4);
   line-height: 1.6em;
-  font-size: 2.5em;
-  border-radius: 100%;
+  font-size: 4em;
   text-align: center;
   position: absolute;
-  height: 1.6em;
-  width: 1.6em;
+  color: #fff;
   left: 50%;
   top: 50%;
 }
+.chonky-file-list-thumbs .chonky-file-list-entry-icon.chonky-icon-over-image {
+  -webkit-filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5));
+          filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5));
+  opacity: 0.6;
+}
 .chonky-file-list-thumbs .chonky-file-list-entry-description {
-  background-color: rgba(255, 255, 255, 0.9);
   padding: 0.4em;
+  background-color: #fff;
   -webkit-box-flex: 0;
       -ms-flex: 0;
           flex: 0;
@@ -434,4 +441,4 @@ button.chonky-folder-chain-entry:active {
 }
 
 
-/*# sourceMappingURL=demo.185cdf0a.css.map*/
+/*# sourceMappingURL=demo.a64dbfad.css.map*/

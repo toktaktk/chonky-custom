@@ -11,7 +11,16 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faArrowDown as DescIcon, faArrowUp as AscIcon} from '@fortawesome/free-solid-svg-icons';
 
 import FileListEntry from './FileListEntry';
-import {FileClickHandler, FileData, FolderView, Nullable, Selection, SortOrder, SortProperty} from './typedef';
+import {
+    FileClickHandler,
+    FileData,
+    FolderView,
+    Nullable,
+    Selection,
+    SortOrder,
+    SortProperty,
+    ThumbnailGenerator,
+} from './typedef';
 
 type FileListProps = {
     files: Nullable<FileData>[];
@@ -21,6 +30,8 @@ type FileListProps = {
     doubleClickDelay: number;
     onFileSingleClick: FileClickHandler;
     onFileDoubleClick: FileClickHandler;
+
+    thumbnailGenerator?: ThumbnailGenerator,
 
     sortProperty: SortProperty;
     sortOrder: SortOrder;
