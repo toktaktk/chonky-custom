@@ -38,8 +38,8 @@ export class FileUtil {
   public static relativeDate = (date: Date) => timeAgo.format(date);
   public static readableDate = (date: Date) => {
     const currentYear = date.getFullYear() === CurrentYear;
-    if (currentYear) return dateFormat(date, 'd mmmm, HH:MM');
-    return dateFormat(date, 'd mmmm yyyy, HH:MM');
+    if (currentYear) return dateFormat(date, 'Y-m-d HH:ss');
+    return dateFormat(date, 'Y-m-d HH:ss');
   };
   public static readableSize = (size: number) => {
     const sizeData = filesize(size, { bits: false, output: 'object' }) as any;
