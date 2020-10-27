@@ -9,8 +9,8 @@ npm install --save chonky@0
 > does not support React Hooks. If your project does support Hooks (i.e. it
 > uses React v16.8+), please use a newer version of Chonky from here:
 > https://github.com/TimboKZ/Chonky
-  
- You should now be able to use Chonky components by importing them from the
+
+You should now be able to use Chonky components by importing them from the
 `chonky` package. You will also need to import the CSS file to style the
 component. In the end, your imports would look similar to this:
 

@@ -37,9 +37,9 @@ const CurrentYear = new Date().getFullYear();
 export class FileUtil {
   public static relativeDate = (date: Date) => timeAgo.format(date);
   public static readableDate = (date: Date) => {
-    const currentYear = date.getFullYear() === CurrentYear;
-    if (currentYear) return dateFormat(date, 'Y-m-d HH:ss');
-    return dateFormat(date, 'Y-m-d HH:ss');
+    // const currentYear = date.getFullYear() === CurrentYear;
+    // if (currentYear) return dateFormat(date, 'DD MM YYYY hh:mm');
+    return CurrentYear + dateFormat(date, '-mm-dd hh:ss');
   };
   public static readableSize = (size: number) => {
     const sizeData = filesize(size, { bits: false, output: 'object' }) as any;
