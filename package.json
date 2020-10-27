@@ -1,5 +1,5 @@
 {
-  "name": "chonky",
+  "name": "chonky-bso-custom",
   "version": "0.3.0",
   "description": "React file browser component",
   "main": "lib/index.js",
@@ -88,16 +88,9 @@
     "webpack": "^4.39.1"
   },
   "homepage": "https://github.com/TimboKZ/Chonky#readme",
-  "author": {
-    "name": "Timur Kuzhagaliyev",
-    "email": "tim.kuzh@gmail.com",
-    "url": "https://foxypanda.me/"
-  },
+  "author": "Timur Kuzhagaliyev <tim.kuzh@gmail.com> (https://foxypanda.me/)",
   "contributors": [
-    {
-      "name": "Benjamin Leeds",
-      "email": "b.a.leeds@gmail.com"
-    }
+    "Benjamin Leeds <b.a.leeds@gmail.com>"
   ],
   "repository": {
     "type": "git",
@@ -113,5 +106,10 @@
     "file-dialog",
     "file-browser",
     "react-component"
-  ]
+  ],
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
